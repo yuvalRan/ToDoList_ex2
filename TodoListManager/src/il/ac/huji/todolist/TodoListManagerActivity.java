@@ -14,8 +14,8 @@ import android.widget.ListView;
 public class TodoListManagerActivity extends Activity {
 	
 	private ArrayAdapter<Task> taskAdapter;
-	List<Task> allTasks;
-	ListView tasksList;
+	private List<Task> allTasks;
+	private ListView tasksList;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +43,7 @@ public class TodoListManagerActivity extends Activity {
 	        	taskAdapter.add(new Task(newTask.getText().toString()));
 	        	break;
 	        case R.id.menuItemDelete:
-	        	allTasks.remove(tasksList.getSelectedItemPosition());
-	        	taskAdapter.notifyDataSetChanged();
+	        	taskAdapter.remove(taskAdapter.getItem(tasksList.getSelectedItemPosition()));
 	        	break;
 	    }
 	    return true;
