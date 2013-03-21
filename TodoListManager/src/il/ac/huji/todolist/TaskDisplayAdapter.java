@@ -1,5 +1,6 @@
 package il.ac.huji.todolist;
 
+import java.util.Date;
 import java.util.List;
 
 import android.graphics.Color;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 
 public class TaskDisplayAdapter extends ArrayAdapter<Task> {
 
+	private static final CharSequence NO_DUE_DATE = "No due date";
+
 	public TaskDisplayAdapter(TodoListManagerActivity activity, List<Task> tasks) {
 		super(activity, android.R.layout.simple_list_item_1, tasks);
 	}
@@ -20,14 +23,20 @@ public class TaskDisplayAdapter extends ArrayAdapter<Task> {
 		Task curTask = getItem(position);
 		LayoutInflater inflater = LayoutInflater.from(getContext());
 		View view = inflater.inflate(R.layout.task_row, null);
-		TextView toDo = (TextView)view.findViewById(R.id.taskText);
-		toDo.setText(curTask.getTask());
-		if(position % 2 == 0){
-			toDo.setTextColor(Color.RED);			
+		TextView taskTitle = (TextView)view.findViewById(R.id.txtTodoTitle);
+		TextView taskDate = (TextView)view.findViewById(R.id.txtTodoDueDate);
+		taskTitle.setText(curTask.getTask());
+		if (curTask.getDueDate() != null){
+			taskDate.setText(curTask.getStrDate());		
+			if(curTask.getDueDate().before(new Date())){
+				taskTitle.setTextColor(Color.RED);	
+				taskDate.setTextColor(Color.RED);
+			}
 		}
-		if(position % 2 == 1){
-			toDo.setTextColor(Color.BLUE);			
+		else{
+			taskDate.setText(NO_DUE_DATE);
 		}
+		
 		return view;
 	}
 	

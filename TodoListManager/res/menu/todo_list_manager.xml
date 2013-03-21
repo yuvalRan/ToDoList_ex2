@@ -6,10 +6,6 @@
         android:showAsAction="always"
         android:title="@string/Add"/>
     
-    <item
-        android:id="@+id/menuItemDelete"
-        android:orderInCategory="100"
-        android:showAsAction="always"
-        android:title="@string/Delete"/>
+   
 
 </menu>
