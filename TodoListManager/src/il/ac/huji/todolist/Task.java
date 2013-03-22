@@ -6,14 +6,21 @@ import java.util.Date;
 
 public class Task {
 	
+	private static final String NO_DUE_DATE = "No due date";
 	private String _theTask;
 	private Date _dueDate;
 	private String _strDate;
 	
-	public Task(String theTask, long date) {
+	public Task(String theTask, Date dueDate) {
 		_theTask = theTask;
-		_dueDate = new Date(date);
-		_strDate = dateAsString(_dueDate);
+		if(dueDate != null){
+			_dueDate = new Date(dueDate.getTime());
+			_strDate = dateAsString(_dueDate);
+		}
+		else{
+			_dueDate = null;
+			_strDate = NO_DUE_DATE;
+		}
 	}
 
 	public String getTask() {

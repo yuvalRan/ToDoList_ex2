@@ -92,7 +92,7 @@ public class TodoListManagerActivity extends Activity {
 		case ADD_ITEM:
 			if(resultCode == RESULT_OK){
 				Task toAdd = new Task((String)data.getSerializableExtra(AddNewTodoItemActivity.FIRST_CONTENT), 
-						((Date)data.getSerializableExtra(AddNewTodoItemActivity.SECOND_CONTENT)).getTime());
+						((Date)data.getSerializableExtra(AddNewTodoItemActivity.SECOND_CONTENT)));
 				taskAdapter.add(toAdd);
 			}
 			break;
