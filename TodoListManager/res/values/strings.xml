@@ -4,12 +4,13 @@
     <string name="app_name">ToDolist</string>
     <string name="Add">Add</string>
     <string name="Delete">Delete</string>
+    <string name="Update">Update</string>
     <string name="callTask">Call </string>
     <string name="Cancel">Cancel </string>
     <string name="Ok">OK </string>
     <string name="title_activity_add_new_todo_item">Add New Item</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-    
-
+    <string name="parseApplication">gBzdthO4fpuoofOYxHMkjhLPBnlGMJ2jzvgwpsgY</string>
+    <string name="clientKey">1O6yZeKPK9lTa39A0Rb4beEcQLmziQHdpGIPTOBo</string>
 </resources>

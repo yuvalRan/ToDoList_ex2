@@ -7,6 +7,12 @@
         android:showAsAction="always"
         android:title="@string/Delete"/>
     
+    <item
+        android:id="@+id/menuItemUpdate"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="@string/Update"/>
+    
      <item
         android:id="@+id/menuItemCall"
         android:orderInCategory="100"

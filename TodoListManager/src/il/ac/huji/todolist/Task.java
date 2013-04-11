@@ -4,7 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Task {
+public class Task implements ITodoItem{
 	
 	private static final String NO_DUE_DATE = "No due date";
 	private String _theTask;
@@ -39,5 +39,9 @@ public class Task {
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		String dateStr = df.format(taskDate);
 		return dateStr;
+	}
+
+	public String getTitle() {
+		return _theTask;
 	}
 }
