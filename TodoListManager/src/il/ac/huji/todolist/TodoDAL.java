@@ -24,19 +24,24 @@ public class TodoDAL {
 	ParseObject taskParse; 
 	
 	public TodoDAL(Context context) {
+		//Creates DBHelper Object
 		ActivityDatabase dbHelper = new ActivityDatabase(context);
 		todo_db = dbHelper.getWritableDatabase();
+		//get Cursor for the "todo" table with all data
 		allDataCursor = todo_db.query(ActivityDatabase.TABLE_NAME, 
 				new String[] {"_id", ActivityDatabase.COLUMN1, ActivityDatabase.COLUMN2 },
 				null, null, null, null, null);
 		allDataCursor.moveToFirst();
+		//Parse initializing with keys
 		Parse.initialize(context, context.getResources().getString(R.string.parseApplication), 
 				context.getResources().getString(R.string.clientKey));
 		ParseUser.enableAutomaticUser();
 
 	}
+	@SuppressWarnings("deprecation")
 	public boolean insert(ITodoItem todoItem) {
-		//PARSE
+		//insert to PARSE:
+		//Create Parse object and fill with the appropriate values 
 		taskParse = new ParseObject(ActivityDatabase.TABLE_NAME);
 		taskParse.put(ActivityDatabase.COLUMN1, todoItem.getTitle());
 		Date date = todoItem.getDueDate();
@@ -46,9 +51,11 @@ public class TodoDAL {
 		else{
 			taskParse.put(ActivityDatabase.COLUMN2, JSONObject.NULL);
 		}
+		//commit insertion
 		taskParse.saveInBackground(); 
 		
-		//local DB
+		//local DB:
+		//creates ContentValue object and fill with the appropriate values
 		ContentValues task = new ContentValues();
 		task.put(ActivityDatabase.COLUMN1, todoItem.getTitle());
 		if (date != null){
@@ -57,7 +64,9 @@ public class TodoDAL {
 		else{
 			task.putNull(ActivityDatabase.COLUMN2);
 		}
+		//insert to DB ("todo" table)
 		long returnVal = todo_db.insert(ActivityDatabase.TABLE_NAME, null, task);
+		//update cursor --> ListView
 		allDataCursor.requery();
 		if (returnVal == -1) {
 			return false;
@@ -65,14 +74,20 @@ public class TodoDAL {
 		return true;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public boolean update(ITodoItem todoItem) {
-		//PARSE part
+		//new Date to update
 		final Date date = todoItem.getDueDate();
-		final ITodoItem finalItem = todoItem;
+		//PARSE part
+		//ask Parse DB for this ITodoItem in order to update it's due.
+		//create ParseQuery object and ask for tuples that their "title" field is like
+		//the title of the updated ITodoItem because only due is valid to update.
 		ParseQuery query = new ParseQuery(ActivityDatabase.TABLE_NAME);
 		query.whereEqualTo(ActivityDatabase.COLUMN1, todoItem.getTitle());
+		//run query
 		query.findInBackground(new FindCallback() 
 			{
+				//callback function when query returns
 				public void done(List<ParseObject> matches, ParseException e) {
 					if(e == null){
 						if(!matches.isEmpty()){
@@ -98,8 +113,10 @@ public class TodoDAL {
 		else{
 			task.putNull(ActivityDatabase.COLUMN2);
 		}
+		//update DB (the tuple his "title" column equal to the given ITodoItem title.
 		int returnVal = todo_db.update(ActivityDatabase.TABLE_NAME, task, 
 				ActivityDatabase.COLUMN1 + " = ?", new String[]{todoItem.getTitle()}); 
+		//update cursor --> ListView
 		allDataCursor.requery();
 		if (returnVal != 1) {
 			return false;
@@ -107,6 +124,7 @@ public class TodoDAL {
 		return true;
 		
 	}
+	@SuppressWarnings("deprecation")
 	public boolean delete(ITodoItem todoItem) {
 		//DELETE from PARSE
 		ParseQuery query = new ParseQuery(ActivityDatabase.TABLE_NAME);
@@ -128,6 +146,7 @@ public class TodoDAL {
 		//DELETE from DB
 		int returnVal = todo_db.delete(ActivityDatabase.TABLE_NAME, 
 				ActivityDatabase.COLUMN1 + " = ?", new String[] {todoItem.getTitle() });
+		//update cursor --> ListView
 		allDataCursor.requery();
 		if (returnVal != 1) {
 			return false;
@@ -141,17 +160,14 @@ public class TodoDAL {
 		allCursor = todo_db.query(ActivityDatabase.TABLE_NAME, 
 				new String[] {ActivityDatabase.COLUMN1, ActivityDatabase.COLUMN2},
 		null, null, null, null, null);
-		long date;
-		String title;
+		Task task;
 		if (allCursor.moveToFirst()) {
 			do {
-				title = allCursor.getString(0);
-				Task task = new Task(title, null);
-				try{
-					date = allCursor.getLong(1);
-					task = new Task(title, new Date(date));
-				}catch (Exception e) {
-					
+				if(allCursor.isNull(1)){
+					task = new Task(allCursor.getString(0), null);
+				}
+				else{
+					task = new Task(allCursor.getString(0), new Date(allCursor.getLong(1)));					
 				}
 				activitiesList.add(task);
 			} while (allCursor.moveToNext());
@@ -161,5 +177,20 @@ public class TodoDAL {
 	
 	public Cursor getCursor(){
 		return allDataCursor;
+	}
+	
+	public void testAll(){
+		List<ITodoItem> test = all();
+		for(int i=0;i<test.size();i++){
+			System.out.print("Item" + i + ": ");
+			System.out.print(test.get(i).getTitle());
+			if(test.get(i).getDueDate() == null){
+				System.out.print(" null");
+			}
+			else{
+				System.out.print(test.get(i).getDueDate().toString());				
+			}
+			System.out.println();
+		}
 	}
 }

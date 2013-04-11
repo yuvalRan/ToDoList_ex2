@@ -1,34 +1,23 @@
 package il.ac.huji.todolist;
 
-//import java.util.ArrayList;
+
 import java.util.Date;
-import java.util.List;
-//import java.util.List;
-
-//import com.parse.Parse;
-//import com.parse.ParseUser;
-
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
-//import android.database.sqlite.SQLiteDatabase;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-//import android.widget.AdapterView.AdapterContextMenuInfo;
-//import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class TodoListManagerActivity extends Activity {
 	
 	private static final int ADD_ITEM = 1;
 	private static final String CALL_TASK_PREFIX = "Call ";
-	//private ArrayAdapter<Task> taskAdapter;
 	private ToDolistCursorAdapter todoListCursorAdapter;
-	//private List<Task> allTasks;
 	private ListView tasksList;
 	private TodoDAL todoDALhelper; 
 	
@@ -43,15 +32,12 @@ public class TodoListManagerActivity extends Activity {
 		
 		String[] from = {"title", "due"};
 		int[] to = {R.id.txtTodoTitle, R.id.txtTodoDueDate};
+		//Adapter between DB and ListView
 		todoListCursorAdapter = new ToDolistCursorAdapter(this, R.layout.task_row, todoDALhelper.getCursor(), from, to);
+		//bind DB and ListView
 		tasksList.setAdapter(todoListCursorAdapter);
 		registerForContextMenu(tasksList);
-		
-		//all Test
-		List<ITodoItem> test = todoDALhelper.all();
-		for(int i = 0; i < test.size(); i++){
-			System.out.println(test.get(i).getTitle());
-		}
+
 	}
 
 	@Override
@@ -76,11 +62,13 @@ public class TodoListManagerActivity extends Activity {
 		super.onCreateContextMenu(menu, tasksList, null);
 		getMenuInflater().inflate(R.menu.task_context, menu);
 		String curTask = todoDALhelper.getCursor().getString(1);
+		//set context menu header as the task title
 		menu.setHeaderTitle(curTask);
 		if (curTask.startsWith(CALL_TASK_PREFIX)) {
 			menu.findItem(R.id.menuItemCall).setTitle(curTask);
 		}
 		else{
+			//If not "Call" task remove that option.
 			menu.removeItem(R.id.menuItemCall);
 		}
 	}
@@ -89,12 +77,15 @@ public class TodoListManagerActivity extends Activity {
 		String selectedTask = todoDALhelper.getCursor().getString(1);
 		switch (item.getItemId()){
 			case R.id.menuItemDelete:
+				//delete from DB and from Parse
 				todoDALhelper.delete(new Task(selectedTask, new Date()));
 				return true;
 			case R.id.menuItemUpdate:
+				//update DB and Parse
 				todoDALhelper.update(new Task(selectedTask, new Date()));
 				return true;
 			case R.id.menuItemCall:
+				//Open dialer
 				String phoneNumber = selectedTask.substring(CALL_TASK_PREFIX.length());
 				Intent dial = new Intent(Intent.ACTION_DIAL,Uri.parse("tel:" + phoneNumber));
 				startActivity(dial);
@@ -110,6 +101,7 @@ public class TodoListManagerActivity extends Activity {
 			if(resultCode == RESULT_OK){
 				Task toAdd = new Task((String)data.getSerializableExtra(AddNewTodoItemActivity.FIRST_CONTENT), 
 						((Date)data.getSerializableExtra(AddNewTodoItemActivity.SECOND_CONTENT)));
+				//Insert Task to DB and Parse
 				todoDALhelper.insert(toAdd);
 			}
 			break;

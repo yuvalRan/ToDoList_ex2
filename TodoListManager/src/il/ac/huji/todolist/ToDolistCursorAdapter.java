@@ -5,39 +5,46 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
+/*
+ * Adapts data between tasks DB to the listView
+ */
 public class ToDolistCursorAdapter extends SimpleCursorAdapter{
 
-	private Context _myContext;
 	private Cursor _myCursor;
 	
+	@SuppressWarnings("deprecation")
 	public ToDolistCursorAdapter(Context context, int layout, Cursor c,
 			String[] from, int[] to) {
 		super(context, layout, c, from, to);
-		_myContext = context;
 		_myCursor = c;
 	}
 	
+	//returns the appropriate view
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View view = super.getView(position, convertView, parent);
-		
-		Task curTask;
-		
-		try{
-			curTask = new Task("", new Date(_myCursor.getLong(2)));
-		}catch (Exception e) {
-			curTask = new Task("", null);
-		}
-		
+		//TextView's of each row in the ListView
 		TextView taskTitle = (TextView)view.findViewById(R.id.txtTodoTitle);
 		TextView taskDate = (TextView)view.findViewById(R.id.txtTodoDueDate);
 		
+		Task curTask;
+		
+		//checks whether the due date is null
+		if(_myCursor.isNull(2)){
+			curTask = new Task("", null);
+			taskTitle.setTextColor(Color.BLACK);	
+			taskDate.setTextColor(Color.BLACK);
+		}
+		else{
+			curTask = new Task("", new Date(_myCursor.getLong(2)));
+		}
+		
+		//sets the due date in the text view.
 		taskDate.setText(curTask.getStrDate());
+		//If due date isn't null and also passed display text in red
 		if (curTask.getDueDate() != null){			
 			if(curTask.getDueDate().before(new Date())){
 				taskTitle.setTextColor(Color.RED);	

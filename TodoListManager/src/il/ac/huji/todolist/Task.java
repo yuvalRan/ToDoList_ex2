@@ -1,5 +1,6 @@
 package il.ac.huji.todolist;
 
+import android.annotation.SuppressLint;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -35,6 +36,7 @@ public class Task implements ITodoItem{
 		return _strDate;
 	}
 	
+	@SuppressLint("SimpleDateFormat")
 	public String dateAsString(Date taskDate){
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		String dateStr = df.format(taskDate);
