@@ -80,10 +80,6 @@ public class TodoListManagerActivity extends Activity {
 				//delete from DB and from Parse
 				todoDALhelper.delete(new Task(selectedTask, new Date()));
 				return true;
-			case R.id.menuItemUpdate:
-				//update DB and Parse
-				todoDALhelper.update(new Task(selectedTask, new Date()));
-				return true;
 			case R.id.menuItemCall:
 				//Open dialer
 				String phoneNumber = selectedTask.substring(CALL_TASK_PREFIX.length());

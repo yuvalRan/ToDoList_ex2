@@ -4,7 +4,6 @@
     <string name="app_name">ToDolist</string>
     <string name="Add">Add</string>
     <string name="Delete">Delete</string>
-    <string name="Update">Update</string>
     <string name="callTask">Call </string>
     <string name="Cancel">Cancel </string>
     <string name="Ok">OK </string>
